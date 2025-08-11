@@ -55,7 +55,7 @@ export function SettingsMenu() {
           <DialogHeader>
             <DialogTitle>Double Dare</DialogTitle>
             <DialogDescription>
-              Built with React, Tailwind, shadcn/ui, and Supabase. Design: mobile-first, dark theme.
+              Built by Teamslepperlin0
             </DialogDescription>
           </DialogHeader>
         </DialogContent>
