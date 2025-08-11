@@ -29,7 +29,7 @@ const Index = () => {
       <header className="sticky top-0 z-10 border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <nav className="mx-auto flex max-w-md items-center justify-between p-4">
           <h1 aria-label="App title: Double Dare – Random Dare Generator" className="text-lg font-semibold tracking-tight">
-            Double Dare – Random Dare Generator
+            Double Dare 
           </h1>
           <SettingsMenu />
         </nav>
