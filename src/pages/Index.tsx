@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -7,14 +7,30 @@ import { useDares } from "@/features/dare/useDares";
 import { SettingsMenu } from "@/components/SettingsMenu";
 
 const Index = () => {
+  const [ageConfirmed, setAgeConfirmed] = useState(false);
   const { currentDare, isLoading, error, getRandomDare, getPunishmentDare } = useDares();
   const hasDare = useMemo(() => Boolean(currentDare), [currentDare]);
+
+  if (!ageConfirmed) {
+    return (
+      <div className="fixed inset-0 flex flex-col items-center justify-center bg-background p-4 text-center z-50">
+        <p className="mb-6 text-lg font-semibold">
+          This app contains NSFW content. You must be 18 or older to use it.
+        </p>
+        <Button onClick={() => setAgeConfirmed(true)} size="lg" className="px-8">
+          I am 18 or older
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header className="sticky top-0 z-10 border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <nav className="mx-auto flex max-w-md items-center justify-between p-4">
-          <h1 className="text-lg font-semibold tracking-tight">Double Dare – Random Dare Generator</h1>
+          <h1 aria-label="App title: Double Dare – Random Dare Generator" className="text-lg font-semibold tracking-tight">
+            Double Dare – Random Dare Generator
+          </h1>
           <SettingsMenu />
         </nav>
       </header>
@@ -67,7 +83,7 @@ const Index = () => {
         </section>
 
         <footer className="pointer-events-none mt-auto pb-6 text-center text-xs text-muted-foreground">
-          <p>No login. Mobile-first. Have fun and play safe.</p>
+          <p>NSFW content. For 18+ only. If under 18, please delete this app.</p>
         </footer>
       </main>
     </div>
