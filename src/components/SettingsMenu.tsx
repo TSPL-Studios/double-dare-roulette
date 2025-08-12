@@ -72,7 +72,7 @@ export function SettingsMenu() {
           </DropdownMenuItem>
 
           {/* Separator with FAQ label - only on mobile */}
-          <DropdownMenuSeparator className="md:hidden">
+          <DropdownMenuSeparator />
             <DropdownMenuLabel className="cursor-default select-none">FAQ</DropdownMenuLabel>
           </DropdownMenuSeparator>
 
