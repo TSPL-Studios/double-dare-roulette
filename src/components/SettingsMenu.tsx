@@ -71,11 +71,11 @@ export function SettingsMenu() {
             <span>Credits</span>
           </DropdownMenuItem>
 
-          {/* FAQ Separator and Label */}
-          <DropdownMenuSeparator />
-          <DropdownMenuLabel className="cursor-default select-none">FAQ</DropdownMenuLabel>
+          {/* FAQ Separator and Label - mobile only */}
+          <DropdownMenuSeparator className="md:hidden" />
+          <DropdownMenuLabel className="cursor-default select-none md:hidden">FAQ</DropdownMenuLabel>
 
-          {/* FAQ Item - Mobile only */}
+          {/* FAQ Item - mobile only */}
           <DropdownMenuItem
             onClick={() => setOpenFAQ(true)}
             className="flex items-center justify-between md:hidden"
