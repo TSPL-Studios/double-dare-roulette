@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createClient } from "@supabase/supabase-js";
 import { Settings, Moon, SunMedium, Info, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,32 +20,36 @@ import {
 } from "@/components/ui/dialog";
 import { useTheme } from "next-themes";
 
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
+
 export function SettingsMenu() {
   const { theme, setTheme } = useTheme();
   const [openCredits, setOpenCredits] = useState(false);
   const [openFAQ, setOpenFAQ] = useState(false);
   const [expandedFAQ, setExpandedFAQ] = useState<number | null>(null);
+  const [faqs, setFaqs] = useState<{ question: string; answer: string }[]>([]);
 
   const isDark = theme !== "light";
 
-  const faqs = [
-    {
-      question: "Will there be a Family Friendly Toggle?",
-      answer: "It is not planned at the moment but we can imagine it in the future.",
-    },
-    {
-      question: "How do I change the theme?",
-      answer: "You can toggle between light and dark mode using the switch in the settings menu.",
-    },
-    {
-      question: "Who built this app?",
-      answer: "This app was built by Teamslepperlin0.",
-    },
-    {
-      question: "How can I provide feedback?",
-      answer: "You can send us feedback via email at feedback@example.com.",
-    },
-  ];
+  useEffect(() => {
+    async function loadFaqs() {
+      const { data, error } = await supabase
+        .from("faq")
+        .select("question, answer")
+        .order("sort_order", { ascending: true });
+
+      if (error) {
+        console.error("Error loading FAQs:", error);
+      } else {
+        setFaqs(data || []);
+      }
+    }
+
+    loadFaqs();
+  }, []);
 
   function toggleFAQ(index: number) {
     setExpandedFAQ(expandedFAQ === index ? null : index);
@@ -61,7 +66,10 @@ export function SettingsMenu() {
         <DropdownMenuContent align="end" className="w-56">
           <DropdownMenuLabel>Settings</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className="flex items-center justify-between gap-2" onSelect={(e) => e.preventDefault()}>
+          <DropdownMenuItem
+            className="flex items-center justify-between gap-2"
+            onSelect={(e) => e.preventDefault()}
+          >
             <div className="flex items-center gap-2">
               {isDark ? <Moon className="h-4 w-4" /> : <SunMedium className="h-4 w-4" />}
               <span>Dark mode</span>
@@ -75,11 +83,8 @@ export function SettingsMenu() {
             <span>Credits</span>
           </DropdownMenuItem>
 
-          {/* FAQ Separator and Label - mobile only */}
           <DropdownMenuSeparator className="md:hidden" />
           <DropdownMenuLabel className="cursor-default select-none md:hidden">FAQ</DropdownMenuLabel>
-
-          {/* FAQ Item - mobile only */}
           <DropdownMenuItem
             onClick={() => setOpenFAQ(true)}
             className="flex items-center justify-between md:hidden"
@@ -90,19 +95,15 @@ export function SettingsMenu() {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {/* Credits dialog */}
       <Dialog open={openCredits} onOpenChange={setOpenCredits}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Double Dare</DialogTitle>
-            <DialogDescription>
-              Built by Teamslepperlin0
-            </DialogDescription>
+            <DialogDescription>Built by Teamslepperlin0</DialogDescription>
           </DialogHeader>
         </DialogContent>
       </Dialog>
 
-      {/* FAQ dialog */}
       <Dialog open={openFAQ} onOpenChange={setOpenFAQ}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
