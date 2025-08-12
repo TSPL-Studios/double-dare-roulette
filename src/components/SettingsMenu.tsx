@@ -29,6 +29,10 @@ export function SettingsMenu() {
 
   const faqs = [
     {
+      question: "Will there be a Family Friendly Toggle?",
+      answer: "It is not planned at the moment but we can imagine it in the future.",
+    },
+    {
       question: "How do I change the theme?",
       answer: "You can toggle between light and dark mode using the switch in the settings menu.",
     },
