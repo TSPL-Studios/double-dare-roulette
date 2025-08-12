@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { createClient } from "@supabase/supabase-js";
+
 import { Settings, Moon, SunMedium, Info, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,11 +19,8 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { useTheme } from "next-themes";
+import { supabase } from "@/integrations/supabase/client";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
 
 export function SettingsMenu() {
   const { theme, setTheme } = useTheme();
@@ -36,7 +33,7 @@ export function SettingsMenu() {
 
   useEffect(() => {
     async function loadFaqs() {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from("faq")
         .select("question, answer")
         .order("sort_order", { ascending: true });
