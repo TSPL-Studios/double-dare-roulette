@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Settings, Moon, SunMedium, Info } from "lucide-react";
+import { Settings, Moon, SunMedium, Info, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -22,7 +22,29 @@ import { useTheme } from "next-themes";
 export function SettingsMenu() {
   const { theme, setTheme } = useTheme();
   const [openCredits, setOpenCredits] = useState(false);
-  const isDark = theme !== "light"; // default dark
+  const [openFAQ, setOpenFAQ] = useState(false);
+  const [expandedFAQ, setExpandedFAQ] = useState<number | null>(null);
+
+  const isDark = theme !== "light";
+
+  const faqs = [
+    {
+      question: "How do I change the theme?",
+      answer: "You can toggle between light and dark mode using the switch in the settings menu.",
+    },
+    {
+      question: "Who built this app?",
+      answer: "This app was built by Teamslepperlin0.",
+    },
+    {
+      question: "How can I provide feedback?",
+      answer: "You can send us feedback via email at feedback@example.com.",
+    },
+  ];
+
+  function toggleFAQ(index: number) {
+    setExpandedFAQ(expandedFAQ === index ? null : index);
+  }
 
   return (
     <>
@@ -42,14 +64,30 @@ export function SettingsMenu() {
             </div>
             <Switch checked={isDark} onCheckedChange={(v) => setTheme(v ? "dark" : "light")} />
           </DropdownMenuItem>
+
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => setOpenCredits(true)}>
             <Info className="mr-2 h-4 w-4" />
             <span>Credits</span>
           </DropdownMenuItem>
+
+          {/* Separator with FAQ label - only on mobile */}
+          <DropdownMenuSeparator className="md:hidden">
+            <DropdownMenuLabel className="cursor-default select-none">FAQ</DropdownMenuLabel>
+          </DropdownMenuSeparator>
+
+          {/* FAQ item - only on mobile */}
+          <DropdownMenuItem
+            onClick={() => setOpenFAQ(true)}
+            className="flex items-center justify-between md:hidden"
+          >
+            <span>FAQ</span>
+            <ChevronDown className="h-4 w-4" />
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
+      {/* Credits dialog */}
       <Dialog open={openCredits} onOpenChange={setOpenCredits}>
         <DialogContent>
           <DialogHeader>
@@ -58,6 +96,44 @@ export function SettingsMenu() {
               Built by Teamslepperlin0
             </DialogDescription>
           </DialogHeader>
+        </DialogContent>
+      </Dialog>
+
+      {/* FAQ dialog */}
+      <Dialog open={openFAQ} onOpenChange={setOpenFAQ}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>FAQ</DialogTitle>
+            <DialogDescription>Frequently Asked Questions</DialogDescription>
+          </DialogHeader>
+
+          <div className="mt-4 space-y-2">
+            {faqs.map((faq, index) => (
+              <div
+                key={index}
+                className="border rounded-md p-3 cursor-pointer select-none"
+                onClick={() => toggleFAQ(index)}
+                aria-expanded={expandedFAQ === index}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") toggleFAQ(index);
+                }}
+              >
+                <div className="flex justify-between items-center">
+                  <span className="font-medium">{faq.question}</span>
+                  <ChevronDown
+                    className={`h-4 w-4 transform transition-transform duration-200 ${
+                      expandedFAQ === index ? "rotate-180" : ""
+                    }`}
+                  />
+                </div>
+                {expandedFAQ === index && (
+                  <p className="mt-2 text-sm text-muted-foreground">{faq.answer}</p>
+                )}
+              </div>
+            ))}
+          </div>
         </DialogContent>
       </Dialog>
     </>
